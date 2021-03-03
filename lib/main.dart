@@ -20,9 +20,23 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  List<Offset> points = <Offset>[];
+class Drawing {
+  List<Offset> points;
+  String name;
+  Drawing(this.points,this.name);
+}
 
+class _MyHomePageState extends State<MyHomePage> {
+  var state = "draw";
+  List<Offset> points = <Offset>[];
+  List savelist = [];
+  String txt = "";
+  void save (c) => setState(() {
+    savelist.add(Drawing(List.of(points),c));
+    points.clear();
+    //print(savelist[0].points);
+    state = "list";
+  });
   @override
   Widget build(BuildContext context) {
     final Container sketchArea = Container(
@@ -34,7 +48,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
 
-    return Scaffold(
+    return state=="draw"
+      ?Scaffold(
       appBar: AppBar(
         title: Text('Sketcher'),
       ),
@@ -78,14 +93,26 @@ class _MyHomePageState extends State<MyHomePage> {
                   context: context,
                   builder: (ctx) => AlertDialog(
                     title: Text("Enter File name"),
-                    content: TextField(),
+                    content: TextField(
+                      onChanged: (str) => txt = str,
+                    ),
                     actions: <Widget>[
+                      FlatButton(
+                        onPressed: () {
+                          save (txt);
+                          Navigator.of(ctx).pop();
+                        },
+                        child: Text("save"),
+
+                      ),
                       FlatButton(
                         onPressed: () {
                           Navigator.of(ctx).pop();
                         },
                         child: Text("cancel"),
-                      ),
+
+
+                      )
                     ],
                   ),
                 );
@@ -96,9 +123,42 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
 
 
+    )
+
+    :Scaffold(
+      appBar: AppBar(
+        title: Text('Sketcher'),
+      ),
+      body: ListView(
+        children:
+          savelist.map((picture) {
+            return RaisedButton(
+                onPressed:() => setState(() {
+                  state= "draw";
+                  points = List.of(picture.points);
+                }), child: Text(picture.name),);
+          }).toList()
+
+      ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+
+        floatingActionButton: Stack(
+        children: <Widget>[
+      Align(
+      alignment: Alignment.bottomLeft,
+        child: FloatingActionButton(
+          tooltip: 'go back to drawing',
+          backgroundColor: Colors.red,
+          child: Icon(Icons.add),
+          onPressed: () {
+            setState(() => state = "draw");
+          },
+        ),
+      ),
+
+      ]
+      )
     );
-
-
   }
 }
 
