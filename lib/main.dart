@@ -73,7 +73,23 @@ class _MyHomePageState extends State<MyHomePage> {
               tooltip: 'clear Screen',
               backgroundColor: Colors.red,
               child: Icon(Icons.save),
-
+              onPressed: (){
+                return showDialog(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: Text("Enter File name"),
+                    content: TextField(),
+                    actions: <Widget>[
+                      FlatButton(
+                        onPressed: () {
+                          Navigator.of(ctx).pop();
+                        },
+                        child: Text("cancel"),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         ],
