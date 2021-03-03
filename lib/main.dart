@@ -31,6 +31,10 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Offset> points = <Offset>[];
   List savelist = [];
   String txt = "";
+  String txtt = "";
+  void rename(d,e) => setState(() {
+    e.name = d;
+  });
   void save (c) => setState(() {
     savelist.add(Drawing(List.of(points),c));
     points.clear();
@@ -132,14 +136,57 @@ class _MyHomePageState extends State<MyHomePage> {
       body: ListView(
         children:
           savelist.map((picture) {
-            return RaisedButton(
-                onPressed:() => setState(() {
-                  state= "draw";
-                  points = List.of(picture.points);
-                }), child: Text(picture.name),);
-          }).toList()
+            return Dismissible(
+                key: Key(picture.name),
+                onDismissed: (direction) {
+                savelist.remove(picture);
 
-      ),
+                },
+                background: Container(color: Colors.red),
+                child: Container(
+                    width: double.infinity,
+                    child: RaisedButton(
+                      color: Colors.black,
+                      textColor: Colors.white,
+                      onPressed: () => setState(() {
+                        state= "draw";
+                        points = List.of(picture.points);
+                      }),
+                      onLongPress: () => setState(() {
+                        return showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: Text("Enter new file name"),
+                            content: TextField(
+                              onChanged: (str) => txtt = str,
+                            ),
+                            actions: <Widget>[
+                              FlatButton(
+                                onPressed: () {
+                                  rename (txtt,picture);
+                                  Navigator.of(ctx).pop();
+                                },
+                                child: Text("rename"),
+
+                              ),
+                              FlatButton(
+                                onPressed: () {
+                                  Navigator.of(ctx).pop();
+                                },
+                                child: Text("cancel"),
+
+
+                              )
+                            ],
+                          ),
+                        );
+                      }),
+
+                      child: Text(picture.name),
+                    )));
+          }
+        ).toList()),
+
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
         floatingActionButton: Stack(
