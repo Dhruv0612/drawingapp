@@ -35,7 +35,7 @@
 ## Adding a new drawing from the save window.
 ### In the above pictures, as visible, there is a + icon on the bottom left of the screen. When it is clicked, we are reverted back to the sketcher page, and can start drawing again.
 
-## PS: APK File is present in the 
+## PS: APK File is present in android/app/release
 
 
 
